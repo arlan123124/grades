@@ -14,73 +14,66 @@ public class GradesController implements iGradesController {
     }
 
     @Override
-    public String createGrade(int studentBarcode, float score, String courseName) {
-        if (score < 0 || score > 100) {
-            return "Invalid score value (must be 0-100)";
+    public String createGrade(int studentBarcode, int courseId, int percentage) {
+        if (percentage < 0 || percentage > 100) {
+            return "Invalid percentage value (must be 0-100)";
         }
 
-        grades grade = new grades(studentBarcode, score, courseName);
+        grades grade = new grades(0, studentBarcode, courseId, percentage);  // Assuming 0 as gradeId as it's auto-generated
         boolean created = repo.createGrade(grade);
         return created ? "Grade was created" : "Grade creation failed";
     }
 
-
-
-
-
-
     @Override
     public String getGradesByStudentBarcode(int studentBarcode) {
-        List<grades> grades = repo.getGradesByStudentBarcode(studentBarcode);
-        if (grades.isEmpty()) return "No grades found for this student";
+        List<grades> gradesList = repo.getGradesByStudentBarcode(studentBarcode);
+        if (gradesList.isEmpty()) return "No grades found for this student";
 
         StringBuilder response = new StringBuilder();
-        for (grades grade : grades) {
+        for (grades grade : gradesList) {
             response.append(grade.toString()).append("\n");
         }
         return response.toString();
     }
 
-
-    public double convertGPA(int grade){
-        if(grade >= 95) return 4.0;
-        else if(grade >= 90) return 3.67;
-        else if(grade >= 85) return 3.33;
-        else if(grade >= 80) return 3.0;
-        else if(grade >= 75) return 2.67;
-        else if(grade >= 70) return 2.33;
-        else if(grade >= 65) return 2.0;
-        else if(grade >= 60) return 1.67;
-        else if(grade >= 55) return 1.33;
-        else if(grade >= 50) return 1.0;
-        else return 0. ;
+    public double convertGPA(int percentage) {
+        if (percentage >= 95) return 4.0;
+        else if (percentage >= 90) return 3.67;
+        else if (percentage >= 85) return 3.33;
+        else if (percentage >= 80) return 3.0;
+        else if (percentage >= 75) return 2.67;
+        else if (percentage >= 70) return 2.33;
+        else if (percentage >= 65) return 2.0;
+        else if (percentage >= 60) return 1.67;
+        else if (percentage >= 55) return 1.33;
+        else if (percentage >= 50) return 1.0;
+        else return 0.0;
     }
-
 
     @Override
     public String calculateGPA(int studentBarcode) {
-        List<grades> grades = repo.getGradesByStudentBarcode(studentBarcode);
-        if (grades.isEmpty()) return "No grades available for GPA calculation";
+        List<grades> gradesList = repo.getGradesByStudentBarcode(studentBarcode);
+        if (gradesList.isEmpty()) return "No grades available for GPA calculation";
 
-        float total = 0;
-        for (grades grade : grades) {
-            total += grade.getScore();
+        double totalGPA = 0;
+        int gradeCount = 0;
+        for (grades grade : gradesList) {
+            totalGPA += convertGPA(grade.getPercentage());
+            gradeCount++;
         }
-        float gpa = total / grades.size();
+        double gpa = totalGPA / gradeCount;
         return String.format("GPA for student %d: %.2f", studentBarcode, gpa);
     }
 
-
     @Override
     public String getAllGrades() {
-        List<grades> grades = repo.getAllGrades();
-        if (grades.isEmpty()) return "No grades found in system";
+        List<grades> gradesList = repo.getAllGrades();
+        if (gradesList.isEmpty()) return "No grades found in system";
 
         StringBuilder response = new StringBuilder();
-        for (grades grade : grades) {
+        for (grades grade : gradesList) {
             response.append(grade.toString()).append("\n");
         }
         return response.toString();
     }
-
 }

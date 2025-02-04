@@ -1,53 +1,60 @@
 package models;
 
 public class grades {
-    private int studentBarcode;
-    private float score;
-    private String courseName;
+    private int gradeId;
+    private int studentId;
+    private int courseId;
+    private int percentage;
 
     public grades() {
     }
 
-    public grades(float score, String courseName) {
-        setScore(score);
-        setCourseName(courseName);
+    public grades(int gradeId, int studentId, int courseId, int percentage) {
+        this.gradeId = gradeId;
+        this.studentId = studentId;
+        this.courseId = courseId;
+        this.percentage = percentage;
     }
 
-    public grades(int studentBarcode, float score, String courseName) {
-        this(score, courseName);
-        setStudentBarcode(studentBarcode);
+    public int getGradeId() {
+        return gradeId;
     }
 
-    public int getStudentBarcode() {
-        return studentBarcode;
+    public void setGradeId(int gradeId) {
+        this.gradeId = gradeId;
     }
 
-    public void setStudentBarcode(int studentBarcode) {
-        this.studentBarcode = studentBarcode;
+    public int getStudentId() {
+        return studentId;
     }
 
-    public float getScore() {
-        return score;
+    public void setStudentId(int studentId) {
+        this.studentId = studentId;
     }
 
-    public void setScore(float score) {
-        this.score = score;
+    public int getCourseId() {
+        return courseId;
     }
 
-    public String getCourseName() {
-        return courseName;
+    public void setCourseId(int courseId) {
+        this.courseId = courseId;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public int getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(int percentage) {
+        this.percentage = percentage;
     }
 
     @Override
     public String toString() {
-        return "Grade{" +
-                "studentBarcode=" + studentBarcode +
-                ", score=" + score +
-                ", courseName='" + courseName + '\'' +
+        return "grades{" +
+                "gradeId=" + gradeId +
+                ", studentId=" + studentId +
+                ", courseId=" + courseId +
+                ", percentage=" + percentage +
                 '}';
     }
 }

@@ -20,12 +20,14 @@ public class GradesRepository implements iGradesRepository {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "INSERT INTO grades(student_barcode, score, course_name) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO grades(grade_id, student_barcode, course_id, percentage) VALUES (?, ?, ?, ?)";
             PreparedStatement st = connection.prepareStatement(sql);
 
-            st.setInt(1, grade.getStudentBarcode());
-            st.setFloat(2, grade.getScore());
-            st.setString(3, grade.getCourseName());
+            // Setting values for the prepared statement
+            st.setInt(1, grade.getGradeId());        // grade_id
+            st.setInt(2, grade.getStudentId());      // student_barcode
+            st.setInt(3, grade.getCourseId());       // course_id
+            st.setInt(4, grade.getPercentage());     // percentage
 
             st.execute();
             return true;
@@ -34,6 +36,7 @@ public class GradesRepository implements iGradesRepository {
         }
         return false;
     }
+
 
     @Override
     public List<grades> getGradesByStudentBarcode(int studentBarcode) {
@@ -45,15 +48,16 @@ public class GradesRepository implements iGradesRepository {
             st.setInt(1, studentBarcode);
 
             ResultSet rs = st.executeQuery();
-            List<grades> grades = new ArrayList<>();
+            List<grades> gradesList = new ArrayList<>();
             while (rs.next()) {
-                grades.add(new grades(
+                gradesList.add(new grades(
+                        rs.getInt("grade_id"),
                         rs.getInt("student_barcode"),
-                        rs.getFloat("score"),
-                        rs.getString("course_name")
+                        rs.getInt("course_id"),
+                        rs.getInt("percentage")
                 ));
             }
-            return grades;
+            return gradesList;
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
         }
@@ -65,19 +69,20 @@ public class GradesRepository implements iGradesRepository {
         Connection connection = null;
         try {
             connection = db.getConnection();
-            String sql = "SELECT student_barcode, score, course_name FROM grades";
+            String sql = "SELECT grade_id, student_barcode, course_id, percentage FROM grades";
             Statement st = connection.createStatement();
 
             ResultSet rs = st.executeQuery(sql);
-            List<grades> grades = new ArrayList<>();
+            List<grades> gradesList = new ArrayList<>();
             while (rs.next()) {
-                grades.add(new grades(
+                gradesList.add(new grades(
+                        rs.getInt("grade_id"),
                         rs.getInt("student_barcode"),
-                        rs.getFloat("score"),
-                        rs.getString("course_name")
+                        rs.getInt("course_id"),
+                        rs.getInt("percentage")
                 ));
             }
-            return grades;
+            return gradesList;
         } catch (SQLException e) {
             System.out.println("SQL error: " + e.getMessage());
         }
